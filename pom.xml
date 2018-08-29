@@ -1,0 +1,39 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>eu.debooy.maven</groupId>
+    <artifactId>pom</artifactId>
+    <version>2.2.3-SNAPSHOT</version>
+  </parent>
+  <groupId>eu.debooy.doosutils</groupId>
+  <artifactId>doosutils-test</artifactId>
+  <packaging>jar</packaging>
+  <version>2.0.0-SNAPSHOT</version>
+  <name>Utility classes voor DOOS Applicaties (Test)</name>
+  <description>Utility classes voor het testen van DOOS Applicaties.</description>
+  <inceptionYear>2009</inceptionYear>
+  <scm>
+    <developerConnection>scm:git:ssh://ptah.debooy.eu/srv/git/debooy/DoosUtilsTest.git</developerConnection>
+    <connection>scm:git:ssh://ptah.debooy.eu/srv/git/debooy/DoosUtilsTest.git</connection>
+    <tag>HEAD</tag>
+  </scm>
+
+  <dependencies>
+    <dependency>
+      <groupId>eu.debooy.doosutils</groupId>
+      <artifactId>doosutils-file</artifactId>
+      <version>2.1.0-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.openjpa</groupId>
+      <artifactId>openjpa</artifactId>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
