@@ -21,6 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.StringReader;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
@@ -33,6 +34,10 @@ public abstract class VangOutEnErr {
   private static final PrintStream OUT = System.out;
   private static final PrintStream ERR = System.err;
 
+  private VangOutEnErr() {
+    throw new IllegalStateException("Utility class");
+  }
+  
   private static void recoverOriginalOutput() {
     System.err.flush();
     System.out.flush();
@@ -65,7 +70,7 @@ public abstract class VangOutEnErr {
         err.add(lijn);
         lijn  = reader.readLine();
       }
-    } catch(Throwable e) {
+    } catch(IOException e) {
       throw new RuntimeException("Error obtaining output for ["
                                    + clazz.getName() + "." + methodName + "]",
                                  e);
@@ -76,7 +81,11 @@ public abstract class VangOutEnErr {
         bosOut.close();
         tempErr.close();
         tempOut.close();
-      } catch (IOException e) { }
+      } catch (IOException e) {
+        throw new RuntimeException("Error closing output for ["
+            + clazz.getName() + "." + methodName + "]",
+          e);
+      }
     }
   }
 
@@ -93,7 +102,8 @@ public abstract class VangOutEnErr {
   private static void invokeMethod(Class<?> clazz, String methodName,
                                    String[] args) {
     try {
-      Method  method  = clazz.getMethod(methodName, (new String[0]).getClass());
+      Method method;
+        method = clazz.getMethod(methodName, (new String[0]).getClass());
 
       if ((method.getReturnType() != Void.TYPE)
           || (!Modifier.isStatic(method.getModifiers()))) {
@@ -103,7 +113,8 @@ public abstract class VangOutEnErr {
 
       Object[]  params  = { args };
       method.invoke(null, params);
-    } catch(Throwable e) {
+    } catch(NoSuchMethodException | SecurityException | IllegalAccessException
+          | IllegalArgumentException | InvocationTargetException e) {
       throw new RuntimeException("Error executing " + methodName, e);
     }  
   }

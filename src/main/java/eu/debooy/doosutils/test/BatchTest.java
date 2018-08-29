@@ -37,11 +37,11 @@ public abstract class BatchTest {
   protected List<String>  err = new ArrayList<String>();
   protected List<String>  out = new ArrayList<String>();
 
-  protected final static  String          charsetIn       =
+  protected static final  String          CHARSET         =
       Charset.defaultCharset().name();
-  protected final static  ResourceBundle  resourceBundle  =
+  protected static final  ResourceBundle  resourceBundle  =
       ResourceBundle.getBundle("ApplicatieResources", new Locale("nl"));
-  protected final static  String          temp            =
+  protected static final  String          TEMP            =
       System.getProperty("java.io.tmpdir");
 
   @After
