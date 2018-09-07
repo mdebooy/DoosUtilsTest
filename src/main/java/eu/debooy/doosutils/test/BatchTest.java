@@ -24,7 +24,6 @@ import java.io.BufferedWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 import org.junit.After;
@@ -39,10 +38,10 @@ public abstract class BatchTest {
 
   protected static final  String          CHARSET         =
       Charset.defaultCharset().name();
-  protected static final  ResourceBundle  resourceBundle  =
-      ResourceBundle.getBundle("ApplicatieResources", new Locale("nl"));
   protected static final  String          TEMP            =
       System.getProperty("java.io.tmpdir");
+
+  protected static  ResourceBundle  resourceBundle;
 
   @After
   public void after() {
