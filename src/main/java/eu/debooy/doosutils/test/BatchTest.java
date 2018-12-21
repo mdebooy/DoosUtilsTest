@@ -16,11 +16,9 @@
  */
 package eu.debooy.doosutils.test;
 
-import eu.debooy.doosutils.access.Bestand;
-import eu.debooy.doosutils.exception.BestandException;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,9 +56,14 @@ public abstract class BatchTest {
     }
   }
 
-  protected static void kopieerBestand(BufferedReader bron, BufferedWriter doel)
-      throws BestandException {
-    Bestand.copy(bron, doel);
+  protected static void kopieerBestand(BufferedReader bron,
+                                       BufferedWriter doel)
+      throws IOException {
+    String  data;
+
+    while (null != (data = bron.readLine())) {
+      doel.write(data);
+    }
   }
 }
 
