@@ -3,19 +3,19 @@
   <parent>
     <groupId>eu.debooy.maven</groupId>
     <artifactId>pom</artifactId>
-    <version>2.2.3-SNAPSHOT</version>
+    <version>2.3.0</version>
   </parent>
   <groupId>eu.debooy.doosutils</groupId>
   <artifactId>doosutils-test</artifactId>
   <packaging>jar</packaging>
-  <version>2.0.0-SNAPSHOT</version>
+  <version>2.0.0</version>
   <name>Utility classes voor DOOS Applicaties (Test)</name>
   <description>Utility classes voor het testen van DOOS Applicaties.</description>
   <inceptionYear>2009</inceptionYear>
   <scm>
     <developerConnection>scm:git:ssh://ptah.debooy.eu/srv/git/debooy/DoosUtilsTest.git</developerConnection>
     <connection>scm:git:ssh://ptah.debooy.eu/srv/git/debooy/DoosUtilsTest.git</connection>
-    <tag>HEAD</tag>
+    <tag>doosutils-test-2.0.0</tag>
   </scm>
 
   <dependencies>
