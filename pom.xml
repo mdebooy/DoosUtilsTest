@@ -9,14 +9,27 @@
   <artifactId>doosutils-test</artifactId>
   <packaging>jar</packaging>
   <version>2.0.1-SNAPSHOT</version>
-  <name>Utility classes voor DOOS Applicaties (Test)</name>
-  <description>Utility classes voor het testen van DOOS Applicaties.</description>
+  <name>Utility classes voor dOOS Applicaties (Test)</name>
+  <description>Test utility classes voor het testen van dOOS Applicaties.</description>
   <inceptionYear>2009</inceptionYear>
   <scm>
     <developerConnection>scm:git:ssh://ptah.debooy.eu/srv/git/debooy/DoosUtilsTest.git</developerConnection>
     <connection>scm:git:ssh://ptah.debooy.eu/srv/git/debooy/DoosUtilsTest.git</connection>
     <tag>HEAD</tag>
   </scm>
+
+  <developers>
+    <developer>
+      <name>Marco de Booij</name>
+      <id>booymar</id>
+      <email>marco.developer@debooy.eu</email>
+      <organization>dOOS</organization>
+      <roles>
+        <role>Project Manager</role>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+  </developers>
 
   <dependencies>
     <dependency>
