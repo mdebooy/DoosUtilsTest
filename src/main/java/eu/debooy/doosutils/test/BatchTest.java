@@ -18,12 +18,15 @@ package eu.debooy.doosutils.test;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-
 import org.junit.After;
 
 
@@ -31,8 +34,8 @@ import org.junit.After;
  * @author Marco de Booij
  */
 public abstract class BatchTest {
-  protected List<String>  err = new ArrayList<String>();
-  protected List<String>  out = new ArrayList<String>();
+  protected List<String>  err = new ArrayList<>();
+  protected List<String>  out = new ArrayList<>();
 
   protected static final  String          CHARSET         =
       Charset.defaultCharset().name();
@@ -48,11 +51,37 @@ public abstract class BatchTest {
   }
 
   public void debug() {
+    System.out.println("Out: " + out.size());
     for (int i = 0; i < out.size(); i++) {
-      System.out.println(out.get(i));
+      System.out.printf("%3d - %s \n", i, out.get(i));
     }
+    System.out.println("Err: " + err.size());
     for (int i = 0; i < err.size(); i++) {
-      System.out.println(err.get(i));
+      System.err.printf("%3d - %s \n", i, err.get(i));
+    }
+    System.out.println("<-->");
+  }
+
+  protected static void printBestand(String bestand) {
+    BufferedReader  bron  = null;
+    try {
+      String  data;
+      File    file  = new File(bestand);
+      bron  = new LineNumberReader(
+                  new InputStreamReader(new FileInputStream(file)));
+      while (null != (data = bron.readLine())) {
+        System.out.println(data);
+      }
+    } catch (IOException e) {
+      System.out.println(e.getLocalizedMessage());
+    } finally {
+      if (null != bron) {
+        try {
+          bron.close();
+        } catch (IOException e) {
+          System.out.println(e.getLocalizedMessage());
+        }
+      }
     }
   }
 
@@ -63,6 +92,14 @@ public abstract class BatchTest {
 
     while (null != (data = bron.readLine())) {
       doel.write(data);
+    }
+  }
+
+  protected static void verwijderBestanden(String directory,
+                                           String[] bestanden) {
+    for (String bestand : bestanden) {
+      File  file  = new File(directory + File.separator + bestand);
+      file.delete();
     }
   }
 }
