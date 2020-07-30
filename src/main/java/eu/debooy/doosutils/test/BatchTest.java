@@ -62,6 +62,16 @@ public abstract class BatchTest {
     System.out.println("<-->");
   }
 
+  protected static void kopieerBestand(BufferedReader bron,
+                                       BufferedWriter doel)
+      throws IOException {
+    String  data;
+
+    while (null != (data = bron.readLine())) {
+      doel.write(data);
+    }
+  }
+
   protected static void printBestand(String bestand) {
     BufferedReader  bron  = null;
     try {
@@ -82,16 +92,6 @@ public abstract class BatchTest {
           System.out.println(e.getLocalizedMessage());
         }
       }
-    }
-  }
-
-  protected static void kopieerBestand(BufferedReader bron,
-                                       BufferedWriter doel)
-      throws IOException {
-    String  data;
-
-    while (null != (data = bron.readLine())) {
-      doel.write(data);
     }
   }
 
