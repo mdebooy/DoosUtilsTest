@@ -21,9 +21,13 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -70,6 +74,13 @@ public abstract class BatchTest {
     while (null != (data = bron.readLine())) {
       doel.write(data);
     }
+  }
+
+  protected static void kopieerBestand(ClassLoader classLoader,
+                                       String bron, String doel)
+      throws IOException {
+    InputStream invoer  = classLoader.getResourceAsStream(bron);
+    Files.copy(invoer, Paths.get(doel), StandardCopyOption.REPLACE_EXISTING);
   }
 
   protected static void printBestand(String bestand) {
