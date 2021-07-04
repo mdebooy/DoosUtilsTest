@@ -37,7 +37,7 @@ public abstract class VangOutEnErr {
   private VangOutEnErr() {
     throw new IllegalStateException("Utility class");
   }
-  
+
   private static void recoverOriginalOutput() {
     System.err.flush();
     System.out.flush();
@@ -52,12 +52,12 @@ public abstract class VangOutEnErr {
     ByteArrayOutputStream bosErr  = new ByteArrayOutputStream();
     PrintStream           tempOut = new PrintStream(bosOut, true);
     PrintStream           tempErr = new PrintStream(bosErr, true);
-    System.setOut(tempOut); 
+    System.setOut(tempOut);
     System.setErr(tempErr);
 
     try {
       VangOutEnErr.invokeMethod(clazz, methodName, args);
-      BufferedReader  reader  = 
+      BufferedReader  reader  =
           new BufferedReader(new StringReader(bosOut.toString()));
       String          lijn    = reader.readLine();
       while (null != lijn) {
@@ -72,7 +72,7 @@ public abstract class VangOutEnErr {
       }
     } catch(IOException e) {
       throw new RuntimeException("Error obtaining output for ["
-                                   + clazz.getName() + "." + methodName + "]",
+                                  + clazz.getName() + "." + methodName + "]",
                                  e);
     } finally {
       recoverOriginalOutput();
@@ -98,7 +98,7 @@ public abstract class VangOutEnErr {
 
     execute(clazz, methodName, args, out, err);
   }
-    
+
   private static void invokeMethod(Class<?> clazz, String methodName,
                                    String[] args) {
     try {
@@ -109,13 +109,13 @@ public abstract class VangOutEnErr {
           || (!Modifier.isStatic(method.getModifiers()))) {
         throw new RuntimeException("No executable found: static "
                                    + methodName + "(String[])");
-      } 
+      }
 
       Object[]  params  = { args };
       method.invoke(null, params);
     } catch(NoSuchMethodException | SecurityException | IllegalAccessException
           | IllegalArgumentException | InvocationTargetException e) {
       throw new RuntimeException("Error executing " + methodName, e);
-    }  
+    }
   }
 }
