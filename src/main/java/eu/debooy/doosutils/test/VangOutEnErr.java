@@ -34,7 +34,7 @@ public abstract class VangOutEnErr {
   private static final PrintStream OUT = System.out;
   private static final PrintStream ERR = System.err;
 
-  private VangOutEnErr() {
+  protected VangOutEnErr() {
     throw new IllegalStateException("Utility class");
   }
 
@@ -48,18 +48,17 @@ public abstract class VangOutEnErr {
   public static void execute(Class<?> clazz, String methodName,
                              String[] args,
                              List<String> out, List<String> err) {
-    ByteArrayOutputStream bosOut  = new ByteArrayOutputStream();
-    ByteArrayOutputStream bosErr  = new ByteArrayOutputStream();
-    PrintStream           tempOut = new PrintStream(bosOut, true);
-    PrintStream           tempErr = new PrintStream(bosErr, true);
+    var bosOut  = new ByteArrayOutputStream();
+    var bosErr  = new ByteArrayOutputStream();
+    var tempOut = new PrintStream(bosOut, true);
+    var tempErr = new PrintStream(bosErr, true);
     System.setOut(tempOut);
     System.setErr(tempErr);
 
     try {
       VangOutEnErr.invokeMethod(clazz, methodName, args);
-      BufferedReader  reader  =
-          new BufferedReader(new StringReader(bosOut.toString()));
-      String          lijn    = reader.readLine();
+      var reader  = new BufferedReader(new StringReader(bosOut.toString()));
+      var lijn    = reader.readLine();
       while (null != lijn) {
         out.add(lijn);
         lijn  = reader.readLine();
@@ -83,8 +82,7 @@ public abstract class VangOutEnErr {
         tempOut.close();
       } catch (IOException e) {
         throw new RuntimeException("Error closing output for ["
-            + clazz.getName() + "." + methodName + "]",
-          e);
+            + clazz.getName() + "." + methodName + "]", e);
       }
     }
   }
@@ -93,8 +91,7 @@ public abstract class VangOutEnErr {
                              String[] args,
                              List<String> out, List<String> err)
       throws ClassNotFoundException {
-    @SuppressWarnings("rawtypes")
-    Class   clazz   = Class.forName(className);
+    var clazz = Class.forName(className);
 
     execute(clazz, methodName, args, out, err);
   }

@@ -21,10 +21,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
@@ -41,12 +39,8 @@ public abstract class BatchTest {
   protected List<String>  err = new ArrayList<>();
   protected List<String>  out = new ArrayList<>();
 
-  protected static final  String          CHARSET         =
-      Charset.defaultCharset().name();
-  protected static final  String          TEMP            =
-      System.getProperty("java.io.tmpdir");
-
   protected static  ResourceBundle  resourceBundle;
+  private static    String          temp            = null;
 
   @After
   public void after() {
@@ -56,16 +50,25 @@ public abstract class BatchTest {
 
   public void debug() {
     System.out.println("Out: " + out.size());
-    for (int i = 0; i < out.size(); i++) {
-      System.out.printf("%3d - %s \n", i, out.get(i));
+    for (var i = 0; i < out.size(); i++) {
+      System.out.printf("%3d - %s", i, out.get(i));
+      System.out.println();
     }
     System.out.println("Err: " + err.size());
-    for (int i = 0; i < err.size(); i++) {
-      System.err.printf("%3d - %s \n", i, err.get(i));
+    for (var i = 0; i < err.size(); i++) {
+      System.err.printf("%3d - %s", i, err.get(i));
+      System.out.println();
     }
     System.out.println("<-->");
   }
 
+  protected static String getTemp() {
+    if (null == temp) {
+      temp  = System.getProperty("java.io.tmpdir");
+    }
+
+    return temp;
+  }
   protected static void kopieerBestand(BufferedReader bron,
                                        BufferedWriter doel)
       throws IOException {
@@ -79,7 +82,7 @@ public abstract class BatchTest {
   protected static void kopieerBestand(ClassLoader classLoader,
                                        String bron, String doel)
       throws IOException {
-    InputStream invoer  = classLoader.getResourceAsStream(bron);
+    var invoer  = classLoader.getResourceAsStream(bron);
     Files.copy(invoer, Paths.get(doel), StandardCopyOption.REPLACE_EXISTING);
   }
 
@@ -87,7 +90,7 @@ public abstract class BatchTest {
     BufferedReader  bron  = null;
     try {
       String  data;
-      File    file  = new File(bestand);
+      var     file  = new File(bestand);
       bron  = new LineNumberReader(
                   new InputStreamReader(new FileInputStream(file)));
       while (null != (data = bron.readLine())) {
@@ -108,10 +111,9 @@ public abstract class BatchTest {
 
   protected static void verwijderBestanden(String directory,
                                            String[] bestanden) {
-    for (String bestand : bestanden) {
-      File  file  = new File(directory + File.separator + bestand);
+    for (var bestand : bestanden) {
+      var file  = new File(directory + File.separator + bestand);
       file.delete();
     }
   }
 }
-
