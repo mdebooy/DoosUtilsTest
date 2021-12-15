@@ -24,6 +24,7 @@ import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -31,31 +32,20 @@ import java.util.List;
  * @author Marco de Booij
  */
 public abstract class VangOutEnErr {
-  private static final PrintStream OUT = System.out;
-  private static final PrintStream ERR = System.err;
-
   protected VangOutEnErr() {
     throw new IllegalStateException("Utility class");
-  }
-
-  private static void recoverOriginalOutput() {
-    System.err.flush();
-    System.out.flush();
-    System.setOut(OUT);
-    System.setErr(ERR);
   }
 
   public static void execute(Class<?> clazz, String methodName,
                              String[] args,
                              List<String> out, List<String> err) {
-    var bosOut  = new ByteArrayOutputStream();
-    var bosErr  = new ByteArrayOutputStream();
-    var tempOut = new PrintStream(bosOut, true);
-    var tempErr = new PrintStream(bosErr, true);
-    System.setOut(tempOut);
-    System.setErr(tempErr);
-
-    try {
+    try (var bosOut  = new ByteArrayOutputStream();
+         var bosErr  = new ByteArrayOutputStream();
+         var tempOut = new PrintStream(bosOut, true);
+         var tempErr = new PrintStream(bosErr, true);
+        ) {
+      System.setOut(tempOut);
+      System.setErr(tempErr);
       VangOutEnErr.invokeMethod(clazz, methodName, args);
       var reader  = new BufferedReader(new StringReader(bosOut.toString()));
       var lijn    = reader.readLine();
@@ -73,17 +63,6 @@ public abstract class VangOutEnErr {
       throw new RuntimeException("Error obtaining output for ["
                                   + clazz.getName() + "." + methodName + "]",
                                  e);
-    } finally {
-      recoverOriginalOutput();
-      try {
-        bosErr.close();
-        bosOut.close();
-        tempErr.close();
-        tempOut.close();
-      } catch (IOException e) {
-        throw new RuntimeException("Error closing output for ["
-            + clazz.getName() + "." + methodName + "]", e);
-      }
     }
   }
 
@@ -108,7 +87,7 @@ public abstract class VangOutEnErr {
                                    + methodName + "(String[])");
       }
 
-      Object[]  params  = { args };
+      Object[]  params  = Arrays.copyOf(args,args.length);
       method.invoke(null, params);
     } catch(NoSuchMethodException | SecurityException | IllegalAccessException
           | IllegalArgumentException | InvocationTargetException e) {

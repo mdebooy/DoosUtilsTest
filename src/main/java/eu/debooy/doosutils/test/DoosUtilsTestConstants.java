@@ -11,4 +11,8 @@ package eu.debooy.doosutils.test;
  */
 public final class DoosUtilsTestConstants {
   public static final String  CMD_EXECUTE = "execute";
+
+  private DoosUtilsTestConstants() {
+    throw new IllegalStateException("Utility class");
+  }
 }

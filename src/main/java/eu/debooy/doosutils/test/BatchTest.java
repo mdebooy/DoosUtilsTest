@@ -49,17 +49,19 @@ public abstract class BatchTest {
   }
 
   public void debug() {
-    System.out.println("Out: " + out.size());
+    naarScherm("Out: " + out.size());
     for (var i = 0; i < out.size(); i++) {
-      System.out.printf("%3d - %s", i, out.get(i));
-      System.out.println();
+      naarScherm(String.format("%3d - %s", i, out.get(i)));
     }
-    System.out.println("Err: " + err.size());
+    naarScherm("Err: " + err.size());
     for (var i = 0; i < err.size(); i++) {
-      System.err.printf("%3d - %s", i, err.get(i));
-      System.out.println();
+      foutNaarScherm(String.format("%3d - %s", i, err.get(i)));
     }
-    System.out.println("<-->");
+    naarScherm("<-->");
+  }
+
+  protected static void foutNaarScherm(String regel) {
+      System.err.printf(regel);
   }
 
   protected static String getTemp() {
@@ -69,6 +71,7 @@ public abstract class BatchTest {
 
     return temp;
   }
+
   protected static void kopieerBestand(BufferedReader bron,
                                        BufferedWriter doel)
       throws IOException {
@@ -86,34 +89,31 @@ public abstract class BatchTest {
     Files.copy(invoer, Paths.get(doel), StandardCopyOption.REPLACE_EXISTING);
   }
 
+  protected static void naarScherm(String regel) {
+    System.out.println(regel);
+  }
+
   protected static void printBestand(String bestand) {
-    BufferedReader  bron  = null;
-    try {
+    try (var bron =
+          new LineNumberReader(
+              new InputStreamReader(new FileInputStream(new File(bestand))))) {
       String  data;
-      var     file  = new File(bestand);
-      bron  = new LineNumberReader(
-                  new InputStreamReader(new FileInputStream(file)));
       while (null != (data = bron.readLine())) {
-        System.out.println(data);
+        naarScherm(data);
       }
     } catch (IOException e) {
-      System.out.println(e.getLocalizedMessage());
-    } finally {
-      if (null != bron) {
-        try {
-          bron.close();
-        } catch (IOException e) {
-          System.out.println(e.getLocalizedMessage());
-        }
-      }
+      foutNaarScherm(e.getLocalizedMessage());
     }
   }
 
   protected static void verwijderBestanden(String directory,
                                            String[] bestanden) {
     for (var bestand : bestanden) {
-      var file  = new File(directory + File.separator + bestand);
-      file.delete();
+      try {
+        Files.delete(Paths.get(directory + File.separator + bestand));
+      } catch (IOException ex) {
+        // Kan gebeuren als een test niet volledig gelopen heeft.
+      }
     }
   }
 }
