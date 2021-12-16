@@ -18,34 +18,54 @@ package eu.debooy.doosutils.test;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.io.PrintStream;
+import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import org.junit.After;
 
 
 /**
  * @author Marco de Booij
  */
 public abstract class BatchTest {
-  protected List<String>  err = new ArrayList<>();
-  protected List<String>  out = new ArrayList<>();
+  private static  final ByteArrayOutputStream outContent  =
+      new ByteArrayOutputStream();
+  private static  final ByteArrayOutputStream errContent  =
+      new ByteArrayOutputStream();
+  private static  final PrintStream           originalOut = System.out;
+  private static  final PrintStream           originalErr = System.err;
 
+  protected static  List<String>    err             = new ArrayList<>();
+  protected static  List<String>    out             = new ArrayList<>();
   protected static  ResourceBundle  resourceBundle;
-  private static    String          temp            = null;
+  private   static  String          temp            = null;
 
-  @After
-  public void after() {
+  protected static void after() {
     err.clear();
     out.clear();
+    setErr();
+    setOut();
+    System.setOut(originalOut);
+    System.setErr(originalErr);
+  }
+
+  protected static void before() {
+    err.clear();
+    out.clear();
+    errContent.reset();
+    outContent.reset();
+    System.setOut(new PrintStream(outContent));
+    System.setErr(new PrintStream(errContent));
   }
 
   public void debug() {
@@ -53,10 +73,13 @@ public abstract class BatchTest {
     for (var i = 0; i < out.size(); i++) {
       naarScherm(String.format("%3d - %s", i, out.get(i)));
     }
+
     naarScherm("Err: " + err.size());
     for (var i = 0; i < err.size(); i++) {
       foutNaarScherm(String.format("%3d - %s", i, err.get(i)));
     }
+
+    naarScherm("");
     naarScherm("<-->");
   }
 
@@ -70,6 +93,24 @@ public abstract class BatchTest {
     }
 
     return temp;
+  }
+
+  private static List<String> getUitvoer(String bos) {
+    List<String>  uitvoer = new ArrayList<>();
+    var           reader  = new BufferedReader(
+                                new StringReader(bos));
+    try {
+      var         lijn    = reader.readLine();
+
+      while (null != lijn) {
+        uitvoer.add(lijn);
+        lijn  = reader.readLine();
+      }
+    } catch (IOException e) {
+      uitvoer.add(e.getLocalizedMessage());
+    }
+
+    return uitvoer;
   }
 
   protected static void kopieerBestand(BufferedReader bron,
@@ -104,6 +145,14 @@ public abstract class BatchTest {
     } catch (IOException e) {
       foutNaarScherm(e.getLocalizedMessage());
     }
+  }
+
+  private static void setErr() {
+    err = getUitvoer(errContent.toString());
+  }
+
+  private static void setOut() {
+    out = getUitvoer(outContent.toString());
   }
 
   protected static void verwijderBestanden(String directory,
