@@ -84,7 +84,7 @@ public abstract class BatchTest {
   }
 
   protected static void foutNaarScherm(String regel) {
-      System.err.printf(regel);
+      System.err.println(regel);
   }
 
   protected static String getTemp() {
